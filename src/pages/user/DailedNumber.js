@@ -35,7 +35,7 @@ export default function DailedNumber() {
         .then(response=> console.log(response))
         .catch(error=> console.log(error))
 
-        alert(`Cleck the Number which you want to dail ${dailedNumber}`)
+        alert(`Cleck the Number which you want to dail and click CAll button to call ${dailedNumber}`)
 
         // Axios.post('https://ivrcall.herokuapp.com/final', {From: purchasedNumber ,authID: authId, authSecretID: authSecretId, To: userMobile , Method : "GET", Url :`https://ivrredirect.herokuapp.com/success/${dailedNumber}`})
         // .then(response=> console.log(response))
