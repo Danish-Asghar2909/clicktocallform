@@ -42,7 +42,7 @@ export default function DailedNumber() {
         // .catch(error=> console.log(error))
 
 
-        //  window.location.href = "/";
+          window.location.href = "/";
     }
     return (
         
