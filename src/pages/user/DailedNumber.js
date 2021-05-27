@@ -17,32 +17,44 @@ export default function DailedNumber() {
     const handleCall = () =>{
 
         Axios.post('https://ivrcall.herokuapp.com/final', {From: purchasedNumber ,authID: authId, authSecretID: authSecretId, To: userMobile , Method : "GET", Url :`https://ivrredirect.herokuapp.com/success/${dailedNumber}`})
-        .then(response=> console.log(response))
+        .then(response=> console.log(response.status))
         .catch(error=> console.log(error))
 
 
     }
     const handleSubmit =()=>{
-        console.log("working", dailedNumber)
-        console.log("id in dialed number ", id)
+        // console.log("working", dailedNumber)
+        // console.log("id in dialed number ", id)
         localStorage.setItem('dailedNumber',dailedNumber) 
         Axios.patch(`https://clicktocallserver.herokuapp.com/agents/${id}`,{dailedNumber: dailedNumber})
-        .then(response=> console.log(response))
+        .then(response=> console.log(response.status))
         .catch(error=> console.log(error))
 
 
         Axios.post('https://ivrredirect.herokuapp.com/generate', {dailed: dailedNumber})
-        .then(response=> console.log(response))
+        // .then(response=> console.log("response of generate",response.status))
+        .then(response=> {if(response.status == 200){
+            console.log("status code is 200 ")
+            handleCall();
+        }})
         .catch(error=> console.log(error))
 
-        alert(`Cleck the Number which you want to dail and click CAll button ${dailedNumber}`)
+        // alert(`Cleck the Number which you want to dail ${dailedNumber}`)
+
+
+        const getDailXml = async() =>{
+            let XML = await Axios.get(`https://ivrredirect.herokuapp.com/success/${dailedNumber}`)
+            return XML
+        }
+
+        // console.log("XML is ", getDailXml())
 
         // Axios.post('https://ivrcall.herokuapp.com/final', {From: purchasedNumber ,authID: authId, authSecretID: authSecretId, To: userMobile , Method : "GET", Url :`https://ivrredirect.herokuapp.com/success/${dailedNumber}`})
         // .then(response=> console.log(response))
         // .catch(error=> console.log(error))
 
 
-       
+        //  window.location.href = "/";
     }
     return (
         
@@ -55,7 +67,7 @@ export default function DailedNumber() {
                 <p><input type='text' name="nm"></input></p>
                 <p><input type="submit" value="submit"></input></p>
             </form> */}
-            <button onClick={handleCall}>Call</button>
+            {/* <button onClick={handleCall}>Call</button> */}
         </div>
     )
 }
