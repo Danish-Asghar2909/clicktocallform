@@ -159,9 +159,7 @@ export default function DailedNumber() {
             {/* whenever we found the dailedNumber which we send from frontend
             and the To number from websocket equals it refresh the page */}
             {callBack.To == dailedNumber && callBack.CallStatus == "completed" ? refreshPage() : null}
-            {/* <button onClick={refreshPage}>refresh</button>
-            <button onClick={handleDisconnect}>disconnect</button>
-            <button onClick={turnOnSocket}>connect</button> */}
+   
         </div>
     )
 }
