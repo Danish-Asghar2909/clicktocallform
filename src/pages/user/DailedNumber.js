@@ -90,7 +90,7 @@ export default function DailedNumber() {
 
     const handleCall = () =>{
 
-        Axios.post('https://ivrcall.herokuapp.com/final', {From: purchasedNumber ,authID: authId, authSecretID: authSecretId, To: userMobile , Method : "GET", Url :`https://ivrredirect.herokuapp.com/success/91${dailedNumber}`})
+        Axios.post('https://ivrcall.herokuapp.com/final', {From: purchasedNumber ,authID: authId, authSecretID: authSecretId, To: userMobile , Method : "GET", Url :`https://ivrredirect.herokuapp.com/success/${dailedNumber}`})
         .then(response=> {
             localStorage.setItem('SID', response.data.sid)
             // console.log("handle call response ",response.data.sid)
@@ -158,8 +158,7 @@ export default function DailedNumber() {
 
             {/* whenever we found the dailedNumber which we send from frontend
             and the To number from websocket equals it refresh the page */}
-            
-            {callBack.To == "91"+dailedNumber && callBack.CallStatus == "completed" ? refreshPage() : null}
+            {callBack.To == dailedNumber && callBack.CallStatus == "completed" ? refreshPage() : null}
    
         </div>
     )
