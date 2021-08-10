@@ -1,6 +1,7 @@
 import Axios from 'axios';
 import React, { useState , useEffect , useRef} from 'react';
 import { io } from "socket.io-client";
+import typeax from './typeax';
 
 
 export default function DailedNumber() {
@@ -15,11 +16,31 @@ export default function DailedNumber() {
     let purchasedNumber  = localStorage.getItem('purchasedNumber');
 
     const [dailedNumber, setdailedNumber] = useState('');
+    // console.log("dialed ", dailedNumber)
     const [status , setStatus] = useState([])
     // console.log("status ", status.CallSid)
-    
 
-    const [callBack, setCallBack] = useState({})
+    React.useEffect( ()=>{
+		typeax.get('/getAuth')
+	   .then(response=>{
+		 console.log("response Auth Credential", response.data.data);
+		 // localStorage.setItem('authID',response.data.data.authID)
+		 // console.log("auth id in make service ", response.data.data.auth_id);
+		
+		 localStorage.setItem('authID',response.data.data.auth_id)
+		 localStorage.setItem('username',response.data.data.username)
+         localStorage.setItem('userMobile',response.data.data.phone) 
+	   })
+	   .catch(err=>{
+		 console.log("error ", err)
+	   })
+	 },[])
+
+    const authID = localStorage.getItem('authID');
+    const authSecretID = localStorage.getItem('authSecretID');
+    const phone = localStorage.getItem('userMobile');
+
+    const [callBack, setCallBack] = useState([])
     // console.log("callBack ", callBack.map((item)=> item.CallStatus))
     // console.log("call back ", callBack)
 
@@ -45,10 +66,31 @@ export default function DailedNumber() {
     //     })
     // }
     
-    const turnOnSocket = () =>{
+let call_sid = localStorage.getItem('sid')
+
+let call_id ;
+let x;
+const records = async(a=call_id , b=dailedNumber)=>{
+    console.log("call sid in records function ", a);
+    alert(0)
+    const toSave = {
+      dialedNo: b,
+      sid: a,
+      username: "ishani@vibtree.com",
+      notes: "call from ishani",
+      tags: "interested",
+      cloudNumber: "913368110803",
+      }
+      await typeax.post('/ide/save', toSave).then(resp => resp.data).then(data => console.log(data)).catch(err => console.log(err))
+  };
+    const turnOnSocket = async () =>{
        
-            io.connect("https://vibtree.herokuapp.com").on('test', name=>{
-                // console.log("test working",name)
+            io.connect("https://vibtree2.herokuapp.com").on('test', name=>{
+                // console.log(name)
+                if(name.CallStatus === 'completed'){
+                    call_id = name.CallSid
+                    records(name.CallSid)
+                }
                 setCallBack(name)
             })
      
@@ -76,6 +118,7 @@ export default function DailedNumber() {
      }
    
 
+
  
 
     const getRealTimeData = async()=>{
@@ -90,7 +133,7 @@ export default function DailedNumber() {
 
     const handleCall = () =>{
 
-        Axios.post('https://ivrcall.herokuapp.com/final', {From: purchasedNumber ,authID: authId, authSecretID: authSecretId, To: userMobile , Method : "GET", Url :`https://ivrredirect.herokuapp.com/success/${dailedNumber}`})
+        Axios.post('https://ivrcall.herokuapp.com/final', {From: "913368110902" ,authID: authID, authSecretID: authSecretID, To: phone , Method : "GET", Url :`https://ivrredirect.herokuapp.com/success/${dailedNumber}`})
         .then(response=> {
             localStorage.setItem('SID', response.data.sid)
             // console.log("handle call response ",response.data.sid)
@@ -146,7 +189,7 @@ export default function DailedNumber() {
                 <p><input type="submit" value="submit"></input></p>
             </form> */}
             {/* <button onClick={handleCall}>Call</button> */}
-            {callBack.CallSid !=null ? <p>Not Null</p> : <p>Null Right now</p>}
+            {/* {callBack.CallSid !=null ? <p>Not Null</p> : <p>Null Right now</p>}
             {callBack.CallStatus == "completed" ? <p>Completed{callBack.Timestamp}</p>: null}
             {callBack.CallStatus == "initiated" ? <p>initiated in {callBack.Timestamp}</p>:null}
             {callBack.CallStatus == "answered" ? <p>answered in {callBack.Timestamp}</p>:null}
@@ -154,11 +197,11 @@ export default function DailedNumber() {
             {callBack.CallStatus == "in-progress" ? <p>in-progress in {callBack.Timestamp}</p>:null }
             {callBack.CallStatus == "busy" ?  handleTimer() :null }
             {callBack.CallStatus == "failed" ?  handleTimer() :null }
-            {callBack.CallStatus == "canceled" ?  handleCancel() :null }
+            {callBack.CallStatus == "canceled" ?  handleCancel() :null } */}
 
             {/* whenever we found the dailedNumber which we send from frontend
             and the To number from websocket equals it refresh the page */}
-            {callBack.To == dailedNumber && callBack.CallStatus == "completed" ? refreshPage() : null}
+            {/* {callBack.To == dailedNumber && callBack.CallStatus == "completed" ? records() : null} */}
    
         </div>
     )

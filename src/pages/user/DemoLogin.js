@@ -15,6 +15,7 @@ import Axios from 'axios';
 import SiteRoute from '../../SiteRoute';
 import Home from '../Home';
 import DemoHome from './DemoHome';
+import typeax from './typeax';
 
 
 
@@ -46,6 +47,40 @@ export default function DemoLogin(props) {
       tableData().then(result=> {setTable(result)})
      
   },[])
+
+  const login = async () => {
+		try {
+		
+			const { data } = await typeax.post('/login', { email_address: userName, password });
+
+			if(!data.status){
+				throw new Error(data.message)
+			}
+
+			console.log(data.data.token)
+
+			// localStorage.setItem('auth_vibcrm', JSON.stringify(data.data));
+			localStorage.removeItem('auth_vibcrm_token_dharm');
+			localStorage.removeItem('auth_vibcrm_authId');
+			localStorage.removeItem('auth_vibcrm_auth_secret');
+			localStorage.setItem('auth_vibcrm_token_dharm', data.data.token);
+			localStorage.setItem('authID', data.data.authId);
+			localStorage.setItem('authSecretID', data.data.auth_secret);
+      
+
+			// localforage
+			// localforage.setItem('auth_vibcrm_token_dharm', data.data.token)
+			alert(0)
+      window.location.href = "/dialed";
+
+		} catch (e) {
+		
+			console.log(e);
+
+		}
+	};
+
+
 
     const onSubmit = () => {
         table.map(item=> {
@@ -99,7 +134,7 @@ export default function DemoLogin(props) {
         <div>
             <input type='text' value={userName} onChange={e=>setUserName(e.target.value)} placeholder="User"></input><br></br>
             <br></br><input type='password' value={password} onChange={e=> setPassword(e.target.value)} placeholder="Password"></input><br></br>
-            <br></br><button onClick={onSubmit}>Submit</button>
+            <br></br><button onClick={login}>Submit</button>
 
             {/* the below line is for testing implement it when we have a redux setup */}
             {/* {
