@@ -70,7 +70,7 @@ export default function DemoLogin(props) {
 
 			// localforage
 			// localforage.setItem('auth_vibcrm_token_dharm', data.data.token)
-			alert(0)
+	
       window.location.href = "/dialed";
 
 		} catch (e) {

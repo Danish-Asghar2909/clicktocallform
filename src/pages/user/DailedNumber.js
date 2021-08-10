@@ -72,7 +72,7 @@ let call_id ;
 let x;
 const records = async(a=call_id , b=dailedNumber)=>{
     console.log("call sid in records function ", a);
-    alert(0)
+  
     const toSave = {
       dialedNo: b,
       sid: a,
